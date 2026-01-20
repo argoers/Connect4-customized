@@ -1,0 +1,73 @@
+@page
+@model WebApp.Pages.CreateNewConfiguration
+
+<h1>Create New Configuration</h1>
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="Columns" class="control-label">Number of Columns</label>
+                <input asp-for="Columns" class="form-control" id="Columns" />
+                <span asp-validation-for="Columns" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Rows" class="control-label">Number of Rows</label>
+                <input asp-for="Rows" class="form-control" id="Rows" />
+                <span asp-validation-for="Rows" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="WinCondition" class="control-label">
+                    Win Condition (pieces in a row)
+                </label>
+                <input asp-for="WinCondition" class="form-control" id="WinCondition" />
+                <span asp-validation-for="WinCondition" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group form-check">
+                <input asp-for="IsCylindrical" class="form-check-input" />
+                <label asp-for="IsCylindrical" class="form-check-label">Cylindrical Board</label>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create Configuration" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function updateWinConditionLimit() {
+            const rows = parseInt(document.getElementById('Rows').value);
+            const cols = parseInt(document.getElementById('Columns').value);
+            const winInput = document.getElementById('WinCondition');
+
+            const maxAllowed = Math.max(rows, cols);
+
+            if (maxAllowed > 0) {
+                winInput.max = maxAllowed;
+            }
+
+            if (parseInt(winInput.value) > maxAllowed) {
+                winInput.value = maxAllowed;
+            }
+            if (parseInt(winInput.value) < 3) {
+                winInput.value = 3;
+            }
+        }
+
+        document.getElementById('Rows').addEventListener('input', updateWinConditionLimit);
+        document.getElementById('Columns').addEventListener('input', updateWinConditionLimit);
+        document.getElementById('WinCondition').addEventListener('input', updateWinConditionLimit);
+
+        updateWinConditionLimit();
+    </script>
+}

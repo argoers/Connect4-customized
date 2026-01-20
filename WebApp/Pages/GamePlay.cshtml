@@ -1,0 +1,352 @@
+@page
+@using BLL
+@using Microsoft.AspNetCore.Html
+@model WebApp.Pages.GamePlay
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<header class="logo-banner" role="banner">
+    <img src="/images/connect4-logo.svg" alt="Connect 4 Logo" class="connect4-logo" style="width: 300px; height: auto;">
+</header>
+
+<!-- Anti-forgery token for AJAX requests -->
+<input type="hidden" name="__RequestVerificationToken" value="@Antiforgery.GetAndStoreTokens(HttpContext).RequestToken" />
+
+<!-- Game Status Display Area -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="game-status-card">
+            <div class="mb-2 fw-bold fs-1">
+                @Model.GameBrain.GameConfiguration.Name
+            </div>
+            @if (Model.IsGameActive)
+            {
+                <div class="current-player-info">
+                    <h4>
+                        Current Player:
+                        <span class="player-name" id="currentPlayerName">
+                            @Model.CurrentPlayerName
+                        </span>
+                    </h4>
+
+                    <div class="game-substatus">
+                        <p class="game-state-indicator">Game is Active</p>
+
+                        <div id="aiThinkingIndicator"
+                             class="ai-thinking-indicator"
+                             style="display:@(Model.GameBrain.IsCurrentPlayerAi() ? "block" : "none")">
+                            <i class="fas fa-spinner fa-spin"></i> AI is thinking...
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="game-result-info">
+                    @if (Model.Winner != null)
+                    {
+                        <h4 class="winner-text">Winner: <span class="winner-name">@Model.Winner</span></h4>
+                    }
+                    else
+                    {
+                        <h4 class="draw-text">Game Over - Draw!</h4>
+                    }
+                    <p class="game-state-indicator">Game has ended</p>
+                </div>
+            }
+
+            <!-- Player Info Display -->
+            <div class="player-info-display">
+                <div class="player blue-player">
+                    <span class="player-name">@Model.GameBrain.Player1Name</span>
+                    <span class="player-type">(@(Model.GameBrain.Player1Type == EPlayerType.Ai ? "AI" : "Human"))</span>
+                    @if (Model.GameBrain.Player1Type == EPlayerType.Ai && Model.GameBrain.Player1Difficulty.HasValue)
+                    {
+                        <span class="ai-difficulty">@Model.GameBrain.Player1Difficulty.Value</span>
+                    }
+                </div>
+
+                <div class="player red-player">
+                    <span class="player-name">@Model.GameBrain.Player2Name</span>
+                    <span class="player-type">(@(Model.GameBrain.Player2Type == EPlayerType.Ai ? "AI" : "Human"))</span>
+                    @if (Model.GameBrain.Player2Type == EPlayerType.Ai && Model.GameBrain.Player2Difficulty.HasValue)
+                    {
+                        <span class="ai-difficulty">@Model.GameBrain.Player2Difficulty.Value</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Restart Game Button -->
+            <div class="restart-section">
+                <button class="btn btn-primary restart-btn" onclick="location.href='/Index'">
+                    Go Home
+                </button>
+                <button class="btn btn-secondary refresh-btn" onclick="refreshGameState()">
+                    Refresh Game
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="board-wrapper">
+            <!-- Column selection buttons aligned with columns -->
+            <div class="column-buttons-container">
+                @for (int x = 0; x < Model.GameBrain.GetBoard().GetLength(0); x++)
+                {
+                var isColumnClickable = Model.IsGameActive && Model.GameBrain.GetFreeSpaceInColumn(x + 1) != -1;
+                var buttonClass = isColumnClickable ? "btn-primary column-btn" : "btn-secondary column-btn disabled";
+
+                <button class="@buttonClass"
+                        onclick="@(isColumnClickable ? $"handleColumnClick({x})" : "")"
+                        @(isColumnClickable ? "" : "disabled")
+                        title="@(isColumnClickable ? $"Click to drop in column {x + 1}" : "Column is full")">
+                    @(x+1)
+                </button>
+                }
+            </div>
+
+            <!-- Board display (non-clickable) -->
+            <table class="table table-bordered @(Model.IsGameActive ? "active-game" : "game-over")" id="game-board">
+                @for (int y = 0; y < Model.GameBrain.GetBoard().GetLength(1); y++)
+                {
+                <tr>
+                    @for (int x = 0; x < Model.GameBrain.GetBoard().GetLength(0); x++)
+                    {
+                    var cellState = Model.GameBrain.GetBoard()[x, y];
+                    var cellId = "cell-" + x + "-" + y;
+
+                    <td id="@cellId" class="game-cell" data-row="@y" data-column="@x">
+                        @GetCellRepresentation(cellState)
+                    </td>
+                    }
+                </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isProcessingMove = false;
+    const currentGameId = '@Model.GameId';
+    const isGameActiveInitial = @Model.IsGameActive.ToString().ToLower();
+    
+    function isGameActiveNow() {
+        const board = document.getElementById('game-board');
+        return board && board.classList.contains('active-game');
+    }
+    
+    async function handleColumnClick(column) {
+        if (isProcessingMove || !isGameActiveNow()) return;
+        await performMoveRequest(column);
+    }
+
+    async function performMoveRequest(columnOrNull) {
+        if (isProcessingMove) return;
+        isProcessingMove = true;
+        
+        try {
+            const response = await fetch('?handler=MakeMove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({
+                    gameId: currentGameId, 
+                    column: columnOrNull
+                })
+            });
+        
+            if (!response.ok) throw new Error('Move failed');
+            
+            const result = await response.json();
+            
+            const ok = result.success ?? result.Success;
+            if (!ok) {
+                showError((result.message ?? result.Message) || 'Invalid move');
+                return;
+            }
+        
+            const moves = result.moves ?? result.Moves ?? [];
+        
+            let lastMoveColor = null;
+        
+            if (Array.isArray(moves)) {
+                hideAiThinking();
+        
+                for (const m of moves) {
+                    const col = m.column ?? m.Column;
+                    const row = m.row ?? m.Row;
+                    const color = (m.color ?? m.Color);   // "blue" | "red"
+                    lastMoveColor = color;
+        
+                    await window.animatePieceDrop(col, row, color);
+                    setBoardCell(col, row, color);
+                }
+            }
+        
+            const gameEnded = result.gameEnded ?? result.GameEnded;
+            const winner = result.winner ?? result.Winner;
+            const isDraw = result.isDraw ?? result.IsDraw;
+        
+            if (gameEnded) {
+                window.__nextAiTick = false;
+                handleGameEnd(winner, isDraw);
+                return;
+            }
+        
+            const currentPlayerName = result.currentPlayerName ?? result.CurrentPlayerName;
+            const nextPlayerIsAi = result.nextPlayerIsAi ?? result.NextPlayerIsAi;
+        
+            // if somehow no moves came back, keep current color (fallback)
+            const nextColor = (lastMoveColor === 'blue') ? 'red'
+                : (lastMoveColor === 'red')  ? 'blue'
+                    : '@(Model.GameBrain.IsNextPlayerBlue() ? "blue" : "red")';
+        
+            if (currentPlayerName) setCurrentPlayerName(currentPlayerName, nextColor);
+            updateColumnButtonsForTurn(nextColor);
+        
+            window.__nextAiTick = (typeof nextPlayerIsAi === 'boolean' && nextPlayerIsAi);
+        
+        } catch (error) {
+            console.error('Error processing move:', error);
+            showError('Failed to process move. Please try again.');
+        } finally {
+            isProcessingMove = false;
+            if (window.__nextAiTick && isGameActiveNow()) {
+                showAiThinking();              // show immediately
+                window.__nextAiTick = false;
+                
+                setTimeout(() => {
+                    // keep it visible while request is made
+                    performMoveRequest(null);
+                }, 250);
+            }
+            hideAiThinking();
+        }
+    }
+
+    function setCurrentPlayerName(name, color) {
+        const el = document.getElementById('currentPlayerName');
+        if (!el) return;
+        
+        el.textContent = name;
+        el.classList.remove('blue-turn', 'red-turn');
+        
+        if (color === 'blue') el.classList.add('blue-turn');
+        if (color === 'red') el.classList.add('red-turn');
+    }
+
+    function updateColumnButtonsForTurn(color) {
+        document.querySelectorAll('.column-btn').forEach(btn => {
+            btn.classList.remove('blue-turn', 'red-turn');
+            if (!btn.disabled) {
+                btn.classList.add(color === 'blue' ? 'blue-turn' : 'red-turn');
+            }
+        });
+    }
+
+    function setBoardCell(column, row, playerColor) {
+        const cell = document.getElementById(`cell-${column}-${row}`);
+        if (!cell) return;
+        cell.innerHTML = `<span class="dot ${playerColor}"></span>`;
+    }
+    
+    function showAiThinking() {
+        const indicator = document.getElementById('aiThinkingIndicator');
+        if (indicator) indicator.style.display = 'block';
+    }
+    
+    function hideAiThinking() {
+        const indicator = document.getElementById('aiThinkingIndicator');
+        if (indicator) indicator.style.display = 'none';
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialColor = '@(Model.GameBrain.IsNextPlayerBlue() ? "blue" : "red")';
+        
+        // ✅ color the current player name immediately
+        const initialName = document.getElementById('currentPlayerName')?.textContent?.trim() ?? '';
+        setCurrentPlayerName(initialName, initialColor);
+        
+        // ✅ color the column buttons immediately
+        updateColumnButtonsForTurn(initialColor);
+        
+        // ✅ start AI autoplay if needed
+        const aiVisible = (document.getElementById('aiThinkingIndicator')?.style.display === 'block');
+        if (aiVisible) {
+            showAiThinking();
+            setTimeout(() => performMoveRequest(null), 250);
+        }
+    });
+    
+    function showError(message) { alert(message); }
+    function refreshGameState() {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('column');
+        window.location.href = currentUrl.toString();
+    }
+    
+    function handleGameEnd(winner, isDraw) {
+      // Disable all buttons
+        document.querySelectorAll('.column-btn').forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('disabled');
+        });
+    
+      // Update the status card UI
+        const statusCard = document.querySelector('.game-status-card');
+        if (statusCard) {
+            const currentInfo = statusCard.querySelector('.current-player-info');
+            if (currentInfo) currentInfo.style.display = 'none';
+            
+            // Ensure result container exists (it won’t exist if page started as active)
+            let resultInfo = statusCard.querySelector('.game-result-info');
+            if (!resultInfo) {
+                resultInfo = document.createElement('div');
+                resultInfo.className = 'game-result-info';
+                const title = statusCard.querySelector('.mb-2.fw-bold.fs-1');
+                title.insertAdjacentElement('afterend', resultInfo);
+            }
+        
+            if (isDraw) {
+                resultInfo.innerHTML = 
+                    '<h4 class="draw-text">Game Over - Draw!</h4><p class="game-state-indicator">Game has ended</p>';
+            } else {
+                resultInfo.innerHTML = 
+                    `<h4 class="winner-text">Winner: <span class="winner-name">${winner ?? ''}</span></h4><p class="game-state-indicator">Game has ended</p>`;
+            }
+        }
+        
+        // Switch board to "game-over" mode so your click guard works
+        const board = document.getElementById('game-board');
+        if (board) {
+            board.classList.remove('active-game');
+            board.classList.add('game-over');
+        }
+        
+        // Always hide thinking at end
+        hideAiThinking();
+        
+        // Also stop any pending AI tick
+        window.__nextAiTick = false;
+    }
+</script>
+
+@functions
+{
+    private static IHtmlContent GetCellRepresentation(ECellState cellValue)
+    {
+        var cls = cellValue switch
+        {
+            ECellState.Blue => "dot blue",
+            ECellState.Red  => "dot red",
+            _               => "dot empty"
+        };
+
+        return new HtmlString($"<span class='{cls}'></span>");
+    }
+}

@@ -1,0 +1,50 @@
+<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="miniLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e90ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#007bff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0056b3;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="miniRedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff4500;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#dc3545;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c82333;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="miniShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Logo container -->
+  <rect x="2" y="2" width="116" height="36" rx="8" ry="8" fill="url(#miniLogoGradient)" filter="url(#miniShadow)"/>
+  
+  <!-- Inner border effect -->
+  <rect x="4" y="4" width="112" height="32" rx="6" ry="6" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  
+  <!-- Connect 4 text -->
+  <text x="50%" y="26" font-family="Arial, sans-serif" font-size="14" font-weight="800" text-anchor="middle" fill="white">
+    CONNECT
+  </text>
+  
+  <!-- The "4" with falling animation effect -->
+  <g transform="translate(60, 20)">
+    <!-- Main 4 with gradient -->
+    <text x="18" y="3" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="url(#miniRedGradient)" transform="rotate(15)">
+      4
+    </text>
+  </g>
+  
+  <!-- Decorative dots -->
+  <g opacity="0.6">
+    <!-- Blue dots -->
+    <circle cx="85" cy="8" r="2" fill="#1e90ff" opacity="0.8"/>
+    <circle cx="92" cy="12" r="1.5" fill="#1e90ff" opacity="0.6"/>
+    
+    <!-- Red dots -->
+    <circle cx="75" cy="10" r="2" fill="#ff4500" opacity="0.8"/>
+    <circle cx="68" cy="14" r="1.5" fill="#ff4500" opacity="0.6"/>
+  </g>
+</svg>

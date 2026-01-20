@@ -1,0 +1,903 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+.form-group {
+  margin-bottom: 1em;
+}
+
+.dot {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.blue {
+  background-color: #1e90ff;
+}
+
+.red {
+  background-color: #ff4500;
+}
+
+.empty {
+  background-color: transparent;
+  border: 1px solid #ccc;
+}
+
+/* Game State Management Interface Styles */
+
+/* Game Status Display Area */
+.game-status-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.current-player-info h4 {
+  margin: 0 0 6px 0;
+}
+
+.game-substatus {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.game-substatus p {
+  margin: 0;
+}
+
+.ai-thinking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #28a745;
+  font-weight: 600;
+}
+
+.game-result-info {
+  margin-bottom: 15px;
+}
+
+/* Base player row */
+.player-info-display {
+  display: flex;
+  justify-content: flex-start;   
+  align-items: center;
+  gap: 16px;                
+  margin-top: 12px;
+}
+
+.player {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Player name should inherit color from parent */
+.player .player-name {
+  color: inherit;
+  font-weight: 700;
+}
+
+/* BLUE player */
+.blue-player {
+  color: #1e90ff;
+  background: rgba(30, 144, 255, 0.08);
+  border: 1px solid rgba(30, 144, 255, 0.25);
+}
+
+/* RED player */
+.red-player {
+  color: #ff4500;
+  background: rgba(255, 69, 0, 0.08);
+  border: 1px solid rgba(255, 69, 0, 0.25);
+}
+
+/* Player type + difficulty styling */
+.player-type {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.ai-difficulty {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.winner-name {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.winner-text {
+  color: #28a745;
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.draw-text {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.game-state-indicator {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Restart Game Button */
+.restart-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+.restart-btn {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: 600;
+    padding: 10px 24px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.restart-btn:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.restart-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+/* Refresh Game Button */
+.refresh-btn {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    font-weight: 600;
+    padding: 10px 24px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+.refresh-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+/* Board Interaction States */
+.active-game {
+  border: 2px solid #28a745;
+  background-color: #f8fff9;
+}
+
+.game-over {
+  border: 2px solid #6c757d;
+  background-color: #f8f9fa;
+  opacity: 0.8;
+}
+
+/* Player Turn Indicators */
+.current-player-info h4 {
+  margin-bottom: 5px;
+  color: #495057;
+}
+
+/* Game Result Styling */
+.winner-text {
+  animation: celebrate 1s ease-in-out;
+}
+
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-status-card {
+    padding: 15px;
+  }
+  
+  .restart-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .winner-text, .draw-text {
+    font-size: 1.1rem;
+  }
+}
+
+
+/* Column Buttons Styles */
+.column-buttons-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  gap: 8px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.column-btn {
+  width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.column-btn.blue-turn:hover:not(.disabled) {
+  box-shadow: 0 4px 8px rgba(30, 144, 255, 0.35);
+  border-color: #1e90ff;
+}
+
+.column-btn.red-turn:hover:not(.disabled) {
+  box-shadow: 0 4px 8px rgba(255, 69, 0, 0.35);
+  border-color: #ff4500;
+}
+
+.column-btn:active:not(.disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.column-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #e9ecef !important;
+  border-color: #dee2e6 !important;
+  color: #6c757d !important;
+}
+
+.column-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Game Board Cell Styles */
+#game-board {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 8px 8px;
+}
+
+.game-cell {
+  position: relative;
+  padding: 15px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #dee2e6;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.game-cell:hover {
+  background-color: #f8f9fa;
+}
+
+/* Logo Banner Styles */
+.logo-banner {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/images/connect4-logo.svg') no-repeat center;
+  background-size: contain;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.logo-banner h1 {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-banner-title {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(45deg, #ffffff, #f8f9fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  display: inline-block;
+  animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+  0% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+  100% { text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.5); }
+}
+
+/* Logo image styles for pages that use the SVG directly */
+.connect4-logo {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.connect4-logo:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* Responsive adjustments for column buttons */
+@media (max-width: 768px) {
+  .column-buttons-container {
+    grid-template-columns: repeat(auto-fit, minmax(35px, 1fr));
+    gap: 6px;
+  }
+  
+  .column-btn {
+    height: 35px;
+    font-size: 0.9rem;
+  }
+  
+  .logo-banner-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .column-buttons-container {
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    gap: 4px;
+  }
+  
+  .column-btn {
+    height: 30px;
+    font-size: 0.8rem;
+  }
+  
+  .logo-banner-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* New Game Page - Player Configuration Cards */
+.player-config-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.player-config-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.player-config-card.ai-player {
+  border: 2px solid #28a745;
+  background: linear-gradient(135deg, #f8fff9 0%, #ffffff 100%);
+}
+
+.player1-header {
+  background: linear-gradient(135deg, #1e90ff 0%, #4169e1 100%);
+  color: white;
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+}
+
+.player2-header {
+  background: linear-gradient(135deg, #ff4500 0%, #dc143c 100%);
+  color: white;
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+}
+
+.player-config-card .card-body {
+  padding: 2rem;
+}
+
+.player-config-card .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.player-config-card .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.player-config-card .form-control,
+.player-config-card .form-select {
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.player-config-card .form-control:focus,
+.player-config-card .form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.player-config-card .form-control:hover,
+.player-config-card .form-select:hover {
+  border-color: #adb5bd;
+}
+
+.ai-difficulty-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 4px solid #28a745;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.ai-difficulty-section .form-label {
+  color: #28a745;
+  font-weight: 700;
+}
+
+.ai-difficulty-section .form-select {
+  background-color: white;
+}
+
+/* AI difficulty section visibility states */
+.ai-difficulty-section.ai-hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.ai-difficulty-section.ai-visible {
+  max-height: 200px;
+  opacity: 1;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #28a745;
+}
+
+/* Ensure AI difficulty sections are properly displayed when visible */
+.ai-difficulty-section[style*="display: block"] {
+  display: block !important;
+  max-height: 200px;
+  opacity: 1;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #28a745;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.ai-difficulty-section[style*="display: none"] {
+  display: none !important;
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+/* Game Controls Styling */
+.btn-lg {
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-lg:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+}
+
+.btn-outline-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.15);
+}
+
+/* Center board section and allow horizontal scroll if board is too wide */
+.board-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* centers buttons + table */
+  overflow-x: auto;        /* scroll instead of shrinking */
+  padding-bottom: 12px;
+}
+
+/* Do NOT let table stretch/shrink to container width */
+#game-board {
+  width: max-content;      /* keeps "natural" width */
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 8px;     /* your gap */
+  margin: 0 auto;          /* safety centering */
+}
+
+/* Force every cell to be identical size */
+#game-board .game-cell {
+  width: 52px;
+  height: 52px;
+  padding: 0 !important;   /* Bootstrap table adds padding otherwise */
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Keep the dot centered and consistent */
+#game-board .dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Make column buttons match the cell width exactly */
+.column-buttons-container {
+  width: max-content;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+}
+
+.column-btn {
+  width: 52px;
+  height: 40px;
+  padding: 0;
+}
+
+/* Column buttons by active player */
+.column-btn.blue-turn {
+  background: #1e90ff !important;
+  border-color: #1e90ff !important;
+}
+
+.column-btn.red-turn {
+  background: #ff4500 !important;
+  border-color: #ff4500 !important;
+}
+
+
+/* Current player color indicator */
+.player-name.blue-turn {
+  color: #1e90ff;
+  font-weight: 700;
+}
+
+.player-name.red-turn {
+  color: #ff4500;
+  font-weight: 700;
+}
+
+/* Responsive Design for New Game Page */
+@media (max-width: 768px) {
+  .player-config-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .player-config-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .player1-header,
+  .player2-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .player-config-card .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-lg {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .d-flex.justify-content-center.gap-3 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-config-card .card-body {
+    padding: 1rem;
+  }
+  
+  .player-config-card .form-control,
+  .player-config-card .form-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .player1-header h5,
+  .player2-header h5 {
+    font-size: 1rem;
+  }
+}
+
+/* Animation for AI player indicator */
+@keyframes aiPulse {
+  0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+.player-config-card.ai-player {
+  animation: aiPulse 2s infinite;
+}
+
+/* Form validation styling */
+.player-config-card .text-danger:not(:empty) {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 0.5rem;
+  display: block;
+}
+
+.player-config-card .text-danger:empty {
+  display: none;
+}
+
+/* Hide empty field validation spans generated by ASP.NET Core */
+.player-config-card .field-validation-error:empty {
+  display: none;
+}
+
+.player-config-card .field-validation-error:not(:empty) {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 0.5rem;
+  display: block;
+}
+
+.player-config-card .form-control.is-invalid {
+  border-color: #dc3545;
+  background-image: none;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.player-config-card .form-control.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Accessibility improvements */
+.player-config-card .form-control:focus,
+.player-config-card .form-select:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.player-config-card .form-select:focus,
+.player-config-card .form-control:focus {
+  border-color: #007bff;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .player-config-card {
+    border: 2px solid #000;
+  }
+  
+  .player-config-card .form-control,
+  .player-config-card .form-select {
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .player-config-card,
+  .player-config-card .form-control,
+  .player-config-card .form-select,
+  .ai-difficulty-section,
+  .btn-lg {
+    transition: none;
+  }
+  
+  .player-config-card.ai-player {
+    animation: none;
+  }
+}
+
+/* Connect 4 Game Drop Animation Framework */
+
+/* Animation utility classes */
+@keyframes dropPiece {
+  from {
+    transform: translateY(var(--drop-from, -500px));
+    opacity: 1;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.piece-dropping {
+  animation: dropPiece var(--drop-duration, 0.6s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  position: relative;
+  z-index: 10;
+}
+
+
+/* Board interaction states during animation */
+.board-animating {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.board-animating .column-btn {
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+/* Visual enhancements for pieces during animation */
+.game-cell .dot.piece-dropping {
+  filter: brightness(1.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Accessibility support - reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .piece-dropping,
+  .piece-bounce {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  .board-animating {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  
+  .board-animating .column-btn {
+    cursor: pointer !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Fallback for browsers that don't support animations */
+@supports not (animation: dropPiece 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)) {
+  .piece-dropping,
+  .piece-bounce {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .board-animating {
+    pointer-events: auto;
+    opacity: 1;
+  }
+}
+
+/* Animation state indicators */
+.piece-animating {
+  position: relative;
+}
+
+
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* Performance optimizations */
+.game-cell .dot {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Ensure smooth animations on high-DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .piece-dropping,
+  .piece-bounce {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

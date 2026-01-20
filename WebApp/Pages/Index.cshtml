@@ -1,0 +1,122 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<header class="logo-banner" role="banner">
+    <img src="/images/connect4-logo.svg" alt="Connect 4 Logo" class="connect4-logo" style="width: 300px; height: auto;">
+</header>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="row mb-2">
+    <div class="col-md-3">
+        <h2>Game Configurations</h2>
+    </div>
+    <div class="col-md-3 text-end">
+        <a asp-page="./CreateNewConfiguration" class="btn btn-primary">
+            Create New Configuration
+        </a>
+    </div>
+</div>
+
+
+@if (!Model.Configurations.Any())
+{
+    <p class="text-muted fst-italic">No configurations</p>
+}
+else
+{
+    <table class="table table-striped mb-5 w-50">
+        <thead>
+        <tr>
+            <th>Description</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var conf in Model.Configurations)
+        {
+            <tr>
+                <td>
+                    @conf.description
+                </td>
+                <td class="text-end">
+                    <a asp-page="./NewGame"
+                       asp-route-configId="@conf.id"
+                       class="btn btn-success btn-sm me-2">
+                        Play
+                    </a>
+
+                    <form method="post"
+                          asp-page-handler="DeleteConf"
+                          class="d-inline">
+                        <input type="hidden" name="id" value="@conf.id"/>
+                        <button type="submit"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this configuration?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+                <td></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+<h2 class="mb-2">Saved Games</h2>
+
+@if (!Model.Games.Any())
+{
+    <p class="text-muted fst-italic">No saved games</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Description</th>
+            <th>Start Date</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        @foreach (var game in Model.Games)
+        {
+            <tr>
+                <td>@game.description</td>
+                <td>@game.date</td>
+                <td>@(game.isFinished ? "Finished" : "In Progress")</td>
+                <td class="text-end">
+                    @if (!game.isFinished)
+                    {
+                        <a asp-page="./GamePlay" asp-route-id="@game.id" class="btn btn-primary btn-sm">Join</a>
+                    }
+                    else
+                    {
+                        <a asp-page="./GamePlay" asp-route-id="@game.id" class="btn btn-info btn-sm">View Result</a>
+                    }
+                    <form method="post"
+                          asp-page-handler="DeleteGame"
+                          class="d-inline">
+                        <input type="hidden" name="id" value="@game.id"/>
+                        <button type="submit"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this game?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+}

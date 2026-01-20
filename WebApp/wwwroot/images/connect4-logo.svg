@@ -1,0 +1,94 @@
+<svg width="400" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e90ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#007bff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0056b3;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff4500;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#dc3545;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c82333;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Logo container with rounded corners -->
+  <rect x="10" y="10" width="380" height="100" rx="20" ry="20" fill="url(#logoGradient)" filter="url(#shadow)"/>
+  
+  <!-- Inner border effect -->
+  <rect x="15" y="15" width="370" height="90" rx="17" ry="17" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Connect 4 text -->
+  <text x="50%" y="65" font-family="Arial, sans-serif" font-size="48" font-weight="800" text-anchor="middle" fill="white" filter="url(#glow)">
+    CONNECT
+  </text>
+  
+  <!-- The "4" with falling animation effect -->
+  <g transform="translate(200, 60)">
+    <!-- Falling 4 shadow -->
+    <text x="60" y="15" font-family="Arial, sans-serif" font-size="64" font-weight="900" fill="#000" opacity="0.3" transform="rotate(15)">
+      4
+    </text>
+    
+    <!-- Main 4 with gradient -->
+    <text x="60" y="10" font-family="Arial, sans-serif" font-size="64" font-weight="900" fill="url(#redGradient)" transform="rotate(15)">
+      4
+    </text>
+    
+    <!-- 4 highlight -->
+    <text x="62" y="8" font-family="Arial, sans-serif" font-size="64" font-weight="900" fill="rgba(255,255,255,0.8)" transform="rotate(15)">
+      4
+    </text>
+  </g>
+  
+  <!-- Decorative dots falling from the 4 -->
+  <g opacity="0.8">
+    <!-- Blue dots -->
+    <circle cx="280" cy="20" r="6" fill="#1e90ff" opacity="0.8"/>
+    <circle cx="300" cy="35" r="5" fill="#1e90ff" opacity="0.6"/>
+    <circle cx="320" cy="50" r="4" fill="#1e90ff" opacity="0.4"/>
+    
+    <!-- Red dots -->
+    <circle cx="260" cy="25" r="6" fill="#ff4500" opacity="0.8"/>
+    <circle cx="240" cy="40" r="5" fill="#ff4500" opacity="0.6"/>
+    <circle cx="220" cy="55" r="4" fill="#ff4500" opacity="0.4"/>
+  </g>
+  
+  <!-- Subtle grid pattern in background -->
+  <g opacity="0.1">
+    <!-- Vertical lines -->
+    <line x1="40" y1="15" x2="40" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="80" y1="15" x2="80" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="120" y1="15" x2="120" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="160" y1="15" x2="160" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="200" y1="15" x2="200" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="240" y1="15" x2="240" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="280" y1="15" x2="280" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="320" y1="15" x2="320" y2="105" stroke="white" stroke-width="1"/>
+    <line x1="360" y1="15" x2="360" y2="105" stroke="white" stroke-width="1"/>
+    
+    <!-- Horizontal lines -->
+    <line x1="15" y1="30" x2="385" y2="30" stroke="white" stroke-width="1"/>
+    <line x1="15" y1="45" x2="385" y2="45" stroke="white" stroke-width="1"/>
+    <line x1="15" y1="60" x2="385" y2="60" stroke="white" stroke-width="1"/>
+    <line x1="15" y1="75" x2="385" y2="75" stroke="white" stroke-width="1"/>
+    <line x1="15" y1="90" x2="385" y2="90" stroke="white" stroke-width="1"/>
+  </g>
+  
+  <!-- Shine effect -->
+  <ellipse cx="120" cy="30" rx="80" ry="15" fill="white" opacity="0.1" transform="rotate(-20 120 30)"/>
+</svg>

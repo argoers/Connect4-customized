@@ -1,0 +1,193 @@
+@page
+@model WebApp.Pages.NewGame
+
+<header class="logo-banner" role="banner">
+    <img src="/images/connect4-logo.svg" alt="Connect 4 Logo" class="connect4-logo" style="width: 300px; height: auto;">
+</header>
+
+<h1>Start a new game</h1>
+
+<div class="alert alert-info">
+    <strong>Selected Configuration:</strong> @Model.SelectedConfigurationDescription
+</div>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+    
+    <div class="row">
+        <!-- Player 1 Configuration Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card player-config-card player1-card h-100">
+                <div class="card-header player1-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-fill me-2"></i>
+                        Player 1 (Blue)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Player1Name" class="form-label">Player 1 Name:</label>
+                        <input asp-for="Player1Name" class="form-control" placeholder="Enter Player 1 name"></input>
+                        <span asp-validation-for="Player1Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="player1Type" class="form-label">Player Type:</label>
+                        <select asp-for="Player1Type" id="player1Type" class="form-select">
+                            <option value="Human">Human</option>
+                            <option value="Ai">AI</option>
+                        </select>
+                    </div>
+
+                    <div id="player1AiDifficultySection" class="form-group ai-difficulty-section" style="display: none;">
+                        <label for="player1AiDifficulty" class="form-label">AI Difficulty:</label>
+                        <select asp-for="Player1Difficulty" id="player1AiDifficulty" class="form-select">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 2 Configuration Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card player-config-card player2-card h-100">
+                <div class="card-header player2-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-fill me-2"></i>
+                        Player 2 (Red)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Player2Name" class="form-label">Player 2 Name:</label>
+                        <input asp-for="Player2Name" class="form-control" placeholder="Enter Player 2 name"></input>
+                        <span asp-validation-for="Player2Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="player2Type" class="form-label">Player Type:</label>
+                        <select asp-for="Player2Type" id="player2Type" class="form-select">
+                            <option value="Human">Human</option>
+                            <option value="Ai">AI</option>
+                        </select>
+                    </div>
+
+                    <div id="player2AiDifficultySection" class="form-group ai-difficulty-section" style="display: none;">
+                        <label for="player2AiDifficulty" class="form-label">AI Difficulty:</label>
+                        <select asp-for="Player2Difficulty" id="player2AiDifficulty" class="form-select">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Controls -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-center gap-3">
+                <input type="submit" value="Start Game" class="btn btn-primary btn-lg px-5"/>
+                <a href="/" class="btn btn-outline-secondary btn-lg px-5">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+    function updateAiVisibility() {
+        const p1Type = document.getElementById('player1Type').value;
+        const p2Type = document.getElementById('player2Type').value;
+        const p1Section = document.getElementById('player1AiDifficultySection');
+        const p2Section = document.getElementById('player2AiDifficultySection');
+
+        // Show/hide Player 1 AI difficulty section
+        if (p1Type === 'Ai') {
+            p1Section.style.display = 'block';
+            p1Section.classList.remove('ai-hidden');
+            p1Section.classList.add('ai-visible');
+        } else {
+            p1Section.style.display = 'none';
+            p1Section.classList.remove('ai-visible');
+            p1Section.classList.add('ai-hidden');
+        }
+
+        // Show/hide Player 2 AI difficulty section
+        if (p2Type === 'Ai') {
+            p2Section.style.display = 'block';
+            p2Section.classList.remove('ai-hidden');
+            p2Section.classList.add('ai-visible');
+        } else {
+            p2Section.style.display = 'none';
+            p2Section.classList.remove('ai-visible');
+            p2Section.classList.add('ai-hidden');
+        }
+
+        // Update card styles based on player type
+        updateCardStyles();
+    }
+
+    function updateCardStyles() {
+        const p1Type = document.getElementById('player1Type').value;
+        const p2Type = document.getElementById('player2Type').value;
+        const p1Card = document.querySelector('.player1-card');
+        const p2Card = document.querySelector('.player2-card');
+
+        // Add AI indicator classes
+        if (p1Type === 'Ai') {
+            p1Card.classList.add('ai-player');
+        } else {
+            p1Card.classList.remove('ai-player');
+        }
+
+        if (p2Type === 'Ai') {
+            p2Card.classList.add('ai-player');
+        } else {
+            p2Card.classList.remove('ai-player');
+        }
+    }
+
+    function initializeAiToggle() {
+        // Initialize AI difficulty sections with proper classes
+        const aiSections = document.querySelectorAll('.ai-difficulty-section');
+        aiSections.forEach(section => {
+            section.classList.add('ai-hidden');
+        });
+
+        // Add event listeners with error handling
+        const p1TypeElement = document.getElementById('player1Type');
+        const p2TypeElement = document.getElementById('player2Type');
+        
+        if (p1TypeElement) {
+            p1TypeElement.addEventListener('change', updateAiVisibility);
+        }
+        if (p2TypeElement) {
+            p2TypeElement.addEventListener('change', updateAiVisibility);
+        }
+        
+        // Initialize visibility after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            updateAiVisibility();
+        }, 100);
+    }
+
+    // Use multiple initialization strategies to ensure reliability
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeAiToggle);
+    } else {
+        // DOM already loaded
+        initializeAiToggle();
+    }
+
+    // Fallback initialization
+    window.addEventListener('load', () => {
+        setTimeout(initializeAiToggle, 200);
+    });
+</script>
+}
